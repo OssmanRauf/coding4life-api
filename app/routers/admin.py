@@ -1,6 +1,5 @@
 from fastapi import Depends, status, APIRouter, HTTPException
 from schemas.user import AdminRequests
-from schemas.user import RequestAnswer, AdminRequests
 from typing import List
 from sqlalchemy.orm import Session
 from db.database import get_db
