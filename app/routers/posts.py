@@ -1,12 +1,12 @@
 from unicodedata import category
-from schemas import post
-from core import oauth2
-import models
-from db.database import get_db
+from ..schemas import post
+from ..core import oauth2
+from .. import models
+from ..db.database import get_db
 from sqlalchemy.orm import Session, contains_eager, joinedload
 from fastapi import Depends, status, HTTPException, Response, APIRouter
 from typing import List, Optional
-from schemas.post import PostResponse
+from ..schemas.post import PostResponse
 import math
 from datetime import datetime
 

@@ -1,14 +1,14 @@
 from random import randint
-import models
-from db.database import get_db
+from .. import models
+from ..db.database import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends, status, APIRouter, HTTPException, Response
 from typing import List
-from core import utils
-from schemas.user import User, UserCreate, UserUpdate
-from core import oauth2
+from ..core import utils
+from ..schemas.user import User, UserCreate, UserUpdate
+from ..core import oauth2
 from fastapi_mail import FastMail, MessageSchema
-from core.utils import conf
+from ..core.utils import conf
 from email_validator import validate_email, EmailNotValidError
 from fastapi import File, UploadFile
 import shutil

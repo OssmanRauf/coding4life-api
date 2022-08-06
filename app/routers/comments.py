@@ -1,10 +1,10 @@
-from schemas.comment import CommentOut, CommentCreate
-from core import oauth2
-import models
-from db.database import get_db
+from ..schemas.comment import CommentOut, CommentCreate
+from ..core import oauth2
+from .. import models
+from ..db.database import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends, status, HTTPException, Response, APIRouter
-from typing import List, Optional
+from typing import List
 
 # create router object
 router = APIRouter(

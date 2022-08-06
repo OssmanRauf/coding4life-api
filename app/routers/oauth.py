@@ -1,7 +1,6 @@
-from core import oauth2, utils
-from schemas import token
-import models
-from db.database import get_db
+from ..core import oauth2, utils
+from .. import models
+from ..db.database import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends, status, APIRouter, HTTPException
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm

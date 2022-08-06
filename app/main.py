@@ -1,12 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import models
-import db.database as database
-import routers.comments as comments
-import routers.posts as posts
-import routers.users as users
-import routers.oauth as oauth
-import routers.admin as admin
+from . import models
+from .db import database
+from .routers import comments, oauth, posts, users, admin
+
 
 # Connect models
 models.Base.metadata.create_all(bind=database.engine)

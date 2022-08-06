@@ -27,5 +27,5 @@ conf = ConnectionConfig(
     MAIL_TLS=True,
     MAIL_SSL=False,
     MAIL_FROM="coding4lifeblog@gmail.com",
-    TEMPLATE_FOLDER="./core/templates"
+    TEMPLATE_FOLDER="./app/core/templates"
 )

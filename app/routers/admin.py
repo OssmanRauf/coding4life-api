@@ -1,11 +1,11 @@
 from fastapi import Depends, status, APIRouter, HTTPException
-from schemas.user import AdminRequests
+from ..schemas.user import AdminRequests
 from typing import List
 from sqlalchemy.orm import Session
-from db.database import get_db
-import models
-from core import oauth2
-from core.utils import conf
+from ..db.database import get_db
+from .. import models
+from ..core import oauth2
+from ..core.utils import conf
 from fastapi_mail import MessageSchema, FastMail
 
 # create router object
