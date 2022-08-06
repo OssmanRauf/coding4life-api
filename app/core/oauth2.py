@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from .config import settings
 from ..schemas import token
 
+#
 # asks for credentials
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
