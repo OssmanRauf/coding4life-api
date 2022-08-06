@@ -72,7 +72,12 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     user.password = utils.hash(user.password)
     user.email = user.email.lower()
     # create user
-    new_user = models.User(is_super_user=False, is_admin=False, ** user.dict())
+    if user.email == "coding4lifeblog@gmail.com":
+        new_user = models.User(
+            is_super_user=True, is_admin=True, ** user.dict())
+    else:
+        new_user = models.User(is_super_user=False,
+                               is_admin=False, ** user.dict())
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
