@@ -206,7 +206,7 @@ def delete_account(db: Session = Depends(get_db), current_user: str = Depends(oa
     user = user_query.first()
 
     # check if the user is current_user
-    if current_user.id != user.id:
+    if current_user.id != user.id or not current_user.is_super_user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail=f"Cannot to that")
     # delete post
