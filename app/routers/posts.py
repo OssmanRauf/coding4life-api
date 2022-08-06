@@ -1,9 +1,7 @@
-from cgi import print_form
 from unicodedata import category
 from schemas import post
 from core import oauth2
 import models
-from sqlalchemy import desc, true
 from db.database import get_db
 from sqlalchemy.orm import Session, contains_eager, joinedload
 from fastapi import Depends, status, HTTPException, Response, APIRouter
@@ -65,7 +63,6 @@ def get_posts_from_admin(db: Session = Depends(get_db), current_user: str = Depe
 @ router.get('/categories', status_code=status.HTTP_200_OK)
 def get_categories(db: Session = Depends(get_db)):
     categories = db.query(models.Post.category).distinct().all()
-    # print(categories[0])
     return categories
 
 
@@ -113,7 +110,6 @@ def get_single_post(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Post with id {id} not found")
 
-    # print(schemas.PostBase.title)
     return post
 
 
@@ -157,7 +153,6 @@ def update_post(update_post: post.PostCreate, id: int, db: Session = Depends(get
     post_query.update(update_post.dict(), synchronize_session=False)
     # post_query.update(created_at=datetime.now())
     db.commit()
-    # print(datetime.now())
     # post_query.created_at = datetime.now()
     return post_query.first()
 
@@ -172,5 +167,4 @@ def get_post_by_slug(slug: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Post with id {id} not found")
 
-    # print(schemas.PostBase.title)
     return post

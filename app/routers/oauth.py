@@ -44,5 +44,4 @@ def login(userCredentials: OAuth2PasswordRequestForm = Depends(), db: Session = 
 # Refresh token
 @router.get("/refresh_token")
 def refresh_token(tokens: str = Depends(oauth2.refresh_token)):
-    print(tokens)
     return tokens

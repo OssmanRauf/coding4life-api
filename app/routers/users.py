@@ -27,7 +27,6 @@ router = APIRouter(
 # URL to GET all users
 @router.get("/", status_code=status.HTTP_200_OK, response_model=List[User])
 def get_all_users(db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user)):
-    print(current_user.id)
     users = db.query(models.User).all()
     return users
 
@@ -44,7 +43,6 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     # check if email is valid
     try:
         is_valid = py3_validate_email(email_address=user.email)
-        # print(here )
         email = validate_email(user.email)
         if email.domain != "gmail.com":
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
@@ -53,7 +51,6 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                 detail=f"The email address is not valid")
     except EmailNotValidError:
-        print("Email is not valid")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail=f"The email address is not valid")
 
@@ -84,13 +81,12 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.put("/add/profile", status_code=status.HTTP_201_CREATED)
 async def add_profile_pic(file: UploadFile = File(...), db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user)):
-    print("HHH")
     # if not current_user.is_admin:
     #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     user_query = db.query(models.User).filter(
         models.User.id == current_user.id)
     if "image" not in file.content_type:
-        print("Image")
+
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="The file must be a image")
 
@@ -101,7 +97,7 @@ async def add_profile_pic(file: UploadFile = File(...), db: Session = Depends(ge
             shutil.copyfileobj(file.file, buffer)
             buffer.close()
     except Exception as e:
-        print("some", e)
+        return e
     finally:
         # file.close()
         # user = user_query.dict()
@@ -148,7 +144,6 @@ def delete_profile_pic(db: Session = Depends(get_db), current_user: str = Depend
 def get_my_user_info(db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user)):
     user = db.query(models.User).filter(
         models.User.id == current_user.id).first()
-    # print(user.profile_url)
     # Check if id exists
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -160,12 +155,8 @@ def get_my_user_info(db: Session = Depends(get_db), current_user: str = Depends(
 # Get user by username
 @router.get("/{username}", status_code=status.HTTP_200_OK, response_model=User)
 def get_single_user(username: str, db: Session = Depends(get_db)):
-    # print(current_user.id)
-    print("HHHHHHHHH")
     user = db.query(models.User).filter(
         models.User.username == username).first()
-
-    print("HHH", user)
     # Check if id exists
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -192,7 +183,6 @@ async def update_user(update_user: UserUpdate, db: Session = Depends(get_db), cu
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                 detail=f"The email address is not valid")
     except EmailNotValidError:
-        # print(email)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail=f"The email address is not valid")
     user = user_query.first()
@@ -227,7 +217,6 @@ async def request_admin_hability(db: Session = Depends(get_db), current_user: st
     request = db.query(models.AdminRequest).filter(
         models.AdminRequest.user_id == current_user.id).first()
     # check if user has email and user registered to its account and name
-    print(current_user.name)
     if not current_user.email and not current_user.username:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Email or username not found, pleasse fill all of your informations and then request again")

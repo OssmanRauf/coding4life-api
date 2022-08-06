@@ -26,13 +26,11 @@ def get_asked_requests(
 ):
     # check if user is super user
     if not current_user.is_super_user:
-        print("JJJJJ")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail=f"User not authorized to proceed")
     # get all requests for admin and return them
     requests = db.query(models.AdminRequest, models.User).outerjoin(
         models.User).order_by(models.AdminRequest.requested_at.desc()).all()
-    # print(requests.user)
     return requests
 
 
@@ -66,7 +64,7 @@ async def accept_request(id: int, db: Session = Depends(get_db), current_user: s
     try:
         await fm.send_message(message, template_name="accepted.html")
     except Exception as e:
-        print(e)
+        return e
     # delete request
     request.delete(synchronize_session=False)
     db.commit()
@@ -76,17 +74,14 @@ async def accept_request(id: int, db: Session = Depends(get_db), current_user: s
 # Give response to requests
 @router.post("/deny_request", status_code=status.HTTP_202_ACCEPTED)
 async def deny_request(id: int, db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user)):
-    print("id")
     request = db.query(models.AdminRequest).filter(
         models.AdminRequest.id == id)
-    print("request.first()")
     if not request.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     # check if user is super user
     if not current_user.is_super_user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail=f"User not authorized to proceed")
-    print("almost deleted")
     user = db.query(models.User).filter(
         models.User.id == request.first().user_id)
 
