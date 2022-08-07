@@ -98,7 +98,9 @@ async def add_profile_pic(file: UploadFile = File(...), db: Session = Depends(ge
     try:
         random = randint(600, 100000)
         file.filename = str(random)+"_profile_pic.png"
-        with open(f'./core/profile_pics/{file.filename}', "wb") as buffer:
+        path = os.path.join(os.path.dirname(
+            __file__), '..', f'core/profile_pics/{file.filename}')
+        with open(path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
             buffer.close()
     except Exception as e:
@@ -119,10 +121,14 @@ def get_profile_pic(username: str, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
-    path = f"./core/profile_pics/{user.profile_url}"
-    base_path = f"./core/profile_pics/base_image.png"
+    path = os.path.join(os.path.dirname(
+        __file__), '..', f'core/profile_pics/{user.profile_url}')
+    base_path = os.path.join(os.path.dirname(
+        __file__), '..', 'core/profile_pics/base_image.png')
     if not os.path.isfile(path):
         if not os.path.isfile(base_path):
+
+            print("kjjj", base_path)
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         return FileResponse(base_path)
     return FileResponse(path)
@@ -137,7 +143,8 @@ def delete_profile_pic(db: Session = Depends(get_db), current_user: str = Depend
     user = user_query.first()
     if not user.profile_url:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    path = f"./core/profile_pics/{user.profile_url}"
+    path = os.path.join(os.path.dirname(
+        __file__), '..', f'core/profile_pics/{user.profile_url}')
     os.remove(path)
     user_query.first().profile_url = None
     db.commit()
