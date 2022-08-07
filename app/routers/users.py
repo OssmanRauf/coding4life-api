@@ -94,6 +94,14 @@ async def add_profile_pic(file: UploadFile = File(...), db: Session = Depends(ge
 
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="The file must be a image")
+    user = user_query.first()
+    if user.profile_url:
+
+        path = os.path.join(os.path.dirname(
+            __file__), '..', f'core/profile_pics/{user.profile_url}')
+        os.remove(path)
+        user_query.first().profile_url = None
+        db.commit()
 
     try:
         random = randint(600, 100000)
