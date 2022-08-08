@@ -57,12 +57,12 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     # check if username is taken
     if username:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-                            detail=f" username taken pleasse try again")
+                            detail=f"Username taken pleasse try again")
 
     # check if user is my-profile
     if user.username == "my-profile":
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-                            detail=f" username taken pleasse try again")
+                            detail=f"sername taken pleasse try again")
 
     # check if the email has an account already
     if user_email:
