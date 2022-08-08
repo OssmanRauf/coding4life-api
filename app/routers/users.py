@@ -98,12 +98,14 @@ async def add_profile_pic(file: UploadFile = File(...), db: Session = Depends(ge
     if user.profile_url and not os.path.exists(path):
         user_query.first().profile_url = None
     if user.profile_url:
-
         path = os.path.join(os.path.dirname(
             __file__), '..', f'core/profile_pics/{user.profile_url}')
-        os.remove(path)
-        user_query.first().profile_url = None
-        db.commit()
+        if user.profile_url and not os.path.exists(path):
+            user_query.first().profile_url = None
+        else:
+            os.remove(path)
+            user_query.first().profile_url = None
+            db.commit()
 
     try:
         random = randint(600, 100000)
