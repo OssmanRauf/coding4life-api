@@ -95,6 +95,8 @@ async def add_profile_pic(file: UploadFile = File(...), db: Session = Depends(ge
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="The file must be a image")
     user = user_query.first()
+    if user.profile_url and not os.path.exists(path):
+        user_query.first().profile_url = None
     if user.profile_url:
 
         path = os.path.join(os.path.dirname(
@@ -136,7 +138,7 @@ def get_profile_pic(username: str, db: Session = Depends(get_db)):
     if not os.path.isfile(path):
         if not os.path.isfile(base_path):
 
-            print("kjjj", base_path)
+            # print("kjjj", base_path)
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         return FileResponse(base_path)
     return FileResponse(path)
@@ -149,10 +151,13 @@ def delete_profile_pic(db: Session = Depends(get_db), current_user: str = Depend
     user_query = db.query(models.User).filter(
         models.User.id == current_user.id)
     user = user_query.first()
+    if user.profile_url and not os.path.exists(path):
+        user_query.first().profile_url = None
     if not user.profile_url:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     path = os.path.join(os.path.dirname(
         __file__), '..', f'core/profile_pics/{user.profile_url}')
+
     os.remove(path)
     user_query.first().profile_url = None
     db.commit()
