@@ -237,6 +237,9 @@ def delete_account(id: int, db: Session = Depends(get_db), current_user: str = D
 
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                                 detail=f"Cannot to that")
+    if user.is_super_user:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail=f"Cannot to that")
 
     # delete post
     user_query.delete(synchronize_session=False)
