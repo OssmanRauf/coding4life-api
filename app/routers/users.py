@@ -135,13 +135,15 @@ def get_profile_pic(username: str, db: Session = Depends(get_db)):
         __file__), '..', f'core/profile_pics/{user.profile_url}')
     base_path = os.path.join(os.path.dirname(
         __file__), '..', 'core/profile_pics/base_image.png')
-    if not os.path.isfile(path):
-        if not os.path.isfile(base_path):
+    if os.path.isfile(path):
+        return FileResponse(path)
 
-            # print("kjjj", base_path)
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    if os.path.isfile(base_path):
+
         return FileResponse(base_path)
-    return FileResponse(path)
+
+        # print("kjjj", base_path)
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
 
 @router.put("/delete/profile", status_code=status.HTTP_201_CREATED)
@@ -219,15 +221,23 @@ async def update_user(update_user: UserUpdate, db: Session = Depends(get_db), cu
 
 # DELETE post by ID
 @ router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
-def delete_account(db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user)):
-    user_query = db.query(models.User).filter(
-        models.User.id == current_user.id)
+def delete_account(id: int, db: Session = Depends(get_db), current_user: str = Depends(oauth2.get_current_user)):
+    if id:
+        user_query = db.query(models.User).filter(
+            models.User.id == id)
+    else:
+
+        user_query = db.query(models.User).filter(
+            models.User.id == current_user.id)
     user = user_query.first()
 
     # check if the user is current_user
-    if current_user.id != user.id or not current_user.is_super_user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail=f"Cannot to that")
+    if current_user.id != user.id:
+        if not current_user.is_super_user:
+
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                detail=f"Cannot to that")
+
     # delete post
     user_query.delete(synchronize_session=False)
     db.commit()
