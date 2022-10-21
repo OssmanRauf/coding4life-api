@@ -27,7 +27,10 @@ def get_all_posts(db: Session = Depends(get_db), search: Optional[str] = "", cat
         models.User).order_by(models.Post.created_at.desc()).filter(models.Post.title.contains(search), models.Post.published == True)
     posts_response = posts_query.limit(limit).offset(offset)
     if len(category) > 0:
-        posts_response = posts_query.filter(models.Post.category == category)
+        posts_response = posts_query.filter(
+            models.Post.category == category, models.Post.published == True)
+    else:
+        posts_response = posts_query.filter(models.Post.published == True)
     # posts = posts_response.all()
     posts_count = posts_query.count()
     num_pages = math.ceil(posts_count/10)
@@ -43,7 +46,8 @@ def get_all_posts(db: Session = Depends(get_db), search: Optional[str] = "", cat
 def get_posts_from_user(username: str, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(
         models.User.username == username).first()
-    posts = db.query(models.Post).filter(models.Post.owner_id == user.id).all()
+    posts = db.query(models.Post).filter(models.Post.owner_id ==
+                                         user.id, models.Post.published == True).all()
     # return posts
     return posts
 
