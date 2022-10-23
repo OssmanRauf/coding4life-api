@@ -24,7 +24,7 @@ router = APIRouter(
              )
 def get_all_posts(db: Session = Depends(get_db), search: Optional[str] = "", category: Optional[str] = "", limit: Optional[int] = None, offset: Optional[int] = 0):
     posts_query = db.query(models.Post, models.User).outerjoin(
-        models.User).order_by(models.Post.created_at.desc()).filter(models.Post.title.contains(search), models.Post.published == True)
+        models.User).order_by(models.Post.created_at.desc()).filter(models.Post.title.ilike(search), models.Post.published == True)
     posts_response = posts_query.limit(limit).offset(offset)
     if len(category) > 0:
         posts_response = posts_query.filter(
