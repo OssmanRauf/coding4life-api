@@ -17,6 +17,7 @@ class PostBase(BaseModel):
     description: Optional[str]
     updated_at: Optional[datetime]
     created_at: Optional[datetime]
+    header_img: Optional[str]
 
     class Config:
         orm_mode = True
@@ -30,7 +31,7 @@ class PostCreate(BaseModel):
     category: Optional[str]
     description: Optional[str]
     updated_at: Optional[datetime]
-
+    header_img: Optional[str]
 
     class Config:
         orm_mode = True

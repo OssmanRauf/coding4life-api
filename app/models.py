@@ -25,6 +25,7 @@ class Post(Base):
     user = relationship("User", backref="post")
     comments = relationship("Comment", backref="post")
     category = Column(String, nullable=True)
+    header_img = Column(String, nullable=True)
 
 
 # Comment Model(Table)
