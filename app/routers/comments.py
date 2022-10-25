@@ -19,6 +19,9 @@ router = APIRouter(
              )
 def get_all_post_comments(slug: str, db: Session = Depends(get_db)):
     post = db.query(models.Post).filter(models.Post.slug == slug).first()
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Post not found")
     comment = db.query(models.Comment, models.User).filter(
         models.Comment.post_id == post.id).outerjoin(models.User).order_by(
         models.Comment.commented_at.desc()).all()
