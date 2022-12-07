@@ -34,7 +34,7 @@ orjson==3.6.5
 passlib==1.7.4
 Pillow==9.1.1
 psycopg2==2.9.3
-py3-validate-email==1.0.7
+py3-validate-email==1.0.5
 pyasn1==0.4.8
 PyAutoGUI==0.9.53
 pycodestyle==2.8.0
