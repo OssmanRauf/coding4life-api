@@ -66,6 +66,7 @@ def get_posts_from_admin(db: Session = Depends(get_db), current_user: str = Depe
 
 @ router.get('/categories', status_code=status.HTTP_200_OK)
 def get_categories(db: Session = Depends(get_db)):
+    print("run")
     categories = db.query(models.Post.category).distinct().all()
     return categories
 
